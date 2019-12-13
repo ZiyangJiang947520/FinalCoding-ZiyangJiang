@@ -7,6 +7,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import pkgLogic.Loan;
 import pkgLogic.Payment;
 
 import java.net.URL;
@@ -17,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.DatePicker;
+import org.apache.poi.ss.formula.functions.FinanceLib;
 
 public class LoanCalcViewController implements Initializable   {
 
@@ -35,23 +37,71 @@ public class LoanCalcViewController implements Initializable   {
 	private DatePicker PaymentStartDate;
 	
 	@FXML
-	private Label lblTotalPayemnts;
-
+	private TextField AdditionalPayment;
 	
+	@FXML
+	private Label lblTotalPayemnts;
+	
+	@FXML
+	private Label lblTotalInterest;
+	
+	@FXML
+	private Label lblScheduledNumberOfPayments;
+	
+	@FXML
+	private Label lblActualNumberOfPayments;
+	
+	@FXML
+	private Label lblTotalEarlyPayments;
+
 	@FXML
 	private TableView<Payment> tvResults;
 	
 	@FXML
 	private TableColumn<Payment, Integer> colPaymentNumber;
 	
+	@FXML
+	private TableColumn<Payment, LocalDate> colPaymentDate;
+	
+	@FXML
+	private TableColumn<Payment, Double> colBalance;
+	
+	@FXML
+	private TableColumn<Payment, Double> colPayment;
+	
+	@FXML
+	private TableColumn<Payment, Double> colAdditionalPayment;
+	
+	@FXML
+	private TableColumn<Payment, Double> colPrinciple;
+	
+	@FXML
+	private TableColumn<Payment, Double> colInterest;
+	
+	
+	
+	
+	
 	
 	private ObservableList<Payment> paymentList = FXCollections.observableArrayList();
 	
-	//TODO: Account for all the other columns		
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		colPaymentNumber.setCellValueFactory(new PropertyValueFactory<>("paymentNbr"));
-		//TODO: Add a 'setCellValueFactor' entry for each column, mapping to each attribute in Payment
+		
+		colPaymentNumber.setCellValueFactory(new PropertyValueFactory<>("PaymentNbr"));
+				
+		colPaymentDate.setCellValueFactory(new PropertyValueFactory<>("PaymentDate"));
+		
+		colPayment.setCellValueFactory(new PropertyValueFactory<>("Payment"));
+		
+		colAdditionalPayment.setCellValueFactory(new PropertyValueFactory<>("AdditionalPayment"));
+		
+		colInterest.setCellValueFactory(new PropertyValueFactory<>("Interest"));
+		
+		colPrinciple.setCellValueFactory(new PropertyValueFactory<>("Principle"));
+		
+		colBalance.setCellValueFactory(new PropertyValueFactory<>("Balance"));		
+		
 		
 		tvResults.setItems(paymentList);
 	}
@@ -68,11 +118,28 @@ public class LoanCalcViewController implements Initializable   {
 	 */
 	@FXML
 	private void btnCalcLoan(ActionEvent event) {
-
+		double balance = 0;
+		double principle = 0;
+		double totalPayment = 0;
+		double totalInterest = 0;
+		double interest = 0;
+		double totalEarlyPayments = 0;
 		//	Examples- how to read data from the form
-		double dLoanAmount = Double.parseDouble(LoanAmount.getText());		
-		lblTotalPayemnts.setText("123");		
+		double dLoanAmount = Double.parseDouble(LoanAmount.getText());
+		
+		lblTotalPayemnts.setText("123");
+		
 		LocalDate localDate = PaymentStartDate.getValue();
+		
+		double dInterestRate = Double.parseDouble(InterestRate.getText());
+		
+		int diNbrOfYears = Integer.parseInt(NbrOfYears.getText());
+		
+		double dAdditionalPayment = Double.parseDouble(AdditionalPayment.getText());
+		
+		double dpmt = Math.abs(FinanceLib.pmt(dInterestRate, diNbrOfYears * 12, dLoanAmount, 0, false));
+		
+		Loan loan = new Loan(dLoanAmount, dInterestRate, dpmt, diNbrOfYears, localDate, dAdditionalPayment);
 		
 		/*
 		 * When this button is clicked, you need to do the following:
@@ -88,6 +155,17 @@ public class LoanCalcViewController implements Initializable   {
 		 * Additional Payment - based on Additional Payment given by user
 		 * Interest - Calculate based on 
 		 */
+		tvResults.getItems().clear();
+		balance = balance - principle;
+		if (balance <= 0) {
+			balance = 0;
+			dAdditionalPayment = 0;
+		}
+		else {
+		totalPayment = totalPayment + principle;
+		totalInterest = totalInterest + interest;
+		totalEarlyPayments = totalEarlyPayments + dAdditionalPayment;
+		}
 		
 	}
 	

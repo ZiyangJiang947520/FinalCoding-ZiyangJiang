@@ -1,15 +1,26 @@
 package pkgLogic;
+import java.time.LocalDate;
 
 public class Payment {
 	
-	//TODO: I've accounted for PaymentNbr, you need to add all the other fields for the class
 	private int PaymentNbr;
+	private LocalDate DueDate;
+	private double Payment;
+	private double AdditionalPayment;
+	private double Interest;
+	private double Principle;
+	private double Balance;
 
 	
-	//TODO: Fix the constructor, add the fields you've added.
-	public Payment(int paymentNbr) {
+	public Payment(int paymentNbr, LocalDate dueDate, double payment, double additionalPayment, double interest, double principle, double balance){
 		super();
 		PaymentNbr = paymentNbr;
+		DueDate = dueDate;
+		Payment = payment;
+		AdditionalPayment = additionalPayment;
+		Interest = interest;
+		Principle = principle;
+		Balance = balance;
 	}
 
 	public int getPaymentNbr() {
@@ -19,6 +30,53 @@ public class Payment {
 	public void setPaymentNbr(int paymentNbr) {
 		PaymentNbr = paymentNbr;
 	}
+
+	public LocalDate getDueDate() {
+		return DueDate;
+	}
+
+	public void setDueDate(LocalDate dueDate) {
+		DueDate = dueDate;
+	}
+
+	public double getPayment() {
+		return Payment;
+	}
+
+	public void setPayment(double payment) {
+		Payment = payment;
+	}
+
+	public double getAdditionalPayment() {
+		return AdditionalPayment;
+	}
+
+	public void setAddPay(double additionalPayment) {
+		AdditionalPayment = additionalPayment;
+	}
+
+	public double getInterest() {
+		return Interest;
+	}
+
+	public void setInterest(double interest) {
+		Interest = interest;
+	}
+
+	public double getPrinciple() {
+		return Principle;
+	}
+
+	public void setPrinciple(double principle) {
+		Principle = principle;
+	}
+
+	public double getBalance() {
+		return Balance;
+	}
+
+	public void setBalance(double balance) {
+		Balance = balance;
+	}
 	
-	//TODO: Add getters and setters for new fields.	
 }
